@@ -3,6 +3,7 @@ from beanie import Document,Indexed
 from uuid import UUID,uuid4
 from pydantic import Field,EmailStr
 from datetime import datetime
+
 class User(Document):
     user_id:UUID = Field(default_factory=uuid4)
     username:  Indexed(str,unique = True)
@@ -30,8 +31,13 @@ class User(Document):
     def create(self) -> datetime:
         return self.id.generation_time
 
-    @classmethod 
+     @classmethod 
     async def by_email(self , email:str):
+        return await self.find_one(self.email == email)
+
+    class Settings:
+        name = 'users'
+        
         return await self.find_one(self.email == email)
 
     class Settings:
